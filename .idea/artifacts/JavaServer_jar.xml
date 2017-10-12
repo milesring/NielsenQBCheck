@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="JavaServer:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/JavaServer_jar</output-path>
+    <root id="archive" name="JavaServer.jar">
+      <element id="module-output" name="NielsenQBCheckServer" />
+    </root>
+  </artifact>
+</component>
