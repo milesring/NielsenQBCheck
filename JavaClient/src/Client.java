@@ -17,7 +17,7 @@ public class Client{
     public Client(){
         settingsLocation = System.getProperty("user.home")+settingsLocation;
     }
-    
+
     public void openSocket(){
         try {
             s = new Socket(address, port);
@@ -95,6 +95,9 @@ public class Client{
                 System.out.println("File exists");
                 //load correct user settings here
                 settingsList = Files.readAllLines(Paths.get(settingsLocation), StandardCharsets.UTF_8);
+                if(settingsList.size()!=3){
+                    return false;
+                }
                 name = settingsList.get(0);
                 address = settingsList.get(1);
                 port = Integer.parseInt(settingsList.get(2));
@@ -117,6 +120,9 @@ public class Client{
 
         System.out.println("Writing new settings file...");
         try {
+            if(!Files.exists(Paths.get(settingsLocation).getParent())){
+                Files.createDirectories(Paths.get(settingsLocation).getParent());
+            }
             settingsStr.add(name+"\n");
             settingsStr.add(address+"\n");
             settingsStr.add(port+"\n");
