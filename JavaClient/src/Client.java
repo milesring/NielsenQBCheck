@@ -125,7 +125,7 @@ public class Client{
             }
             settingsStr.add(name);
             settingsStr.add(address);
-            settingsStr.add(port);
+            settingsStr.add(Integer.toString(port));
             Files.write(Paths.get(settingsLocation), settingsStr, StandardCharsets.UTF_8);
 
             System.out.println("Settings file written.");
