@@ -1,11 +1,17 @@
 import java.io.*;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Client{
 
-    private final String address = "localhost";
+    private String address = "localhost";
+    private final String settingsLocation = "%UserProfile%\\Documents\\NielsenQBCheck\\Settings";
     private String name = "Test";
-    private final int port = 9001;
+    private int port = 9001;
     private Socket s;
 
     public void openSocket(){
@@ -75,4 +81,48 @@ public class Client{
     }
 
 
+    public boolean loadSettings(){
+
+        System.out.println("Loading settings...");
+        List<String> settingsList = null;
+        try {
+            File settings = new File(settingsLocation);
+            if (settings.exists()) {
+                System.out.println("File exists");
+                //load correct user settings here
+                settingsList = Files.readAllLines(Paths.get(settingsLocation), StandardCharsets.UTF_8);
+                name = settingsList.get(0);
+                address = settingsList.get(1);
+                port = Integer.parseInt(settingsList.get(2));
+                System.out.println("Settings loaded...");
+                System.out.println(name);
+                System.out.println(address);
+                System.out.println(port);
+                return true;
+            }
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+
+        System.out.println("No settings file exists");
+        return false;
+    }
+
+    public boolean saveSettings(){
+        ArrayList<String> settingsStr = new ArrayList<>();
+
+        System.out.println("Writing new settings file...");
+        try {
+            settingsStr.add(name+"\n");
+            settingsStr.add(address+"\n");
+            settingsStr.add(port+"\n");
+            Files.write(Paths.get(settingsLocation), settingsStr, StandardCharsets.UTF_8);
+
+            System.out.println("Settings file written.");
+            return true;
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

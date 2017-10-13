@@ -25,7 +25,9 @@ public class QBCheck extends Application {
     public void start(Stage primaryStage) {
         client = new Client();
 
-
+        if(!client.loadSettings()){
+            client.saveSettings();
+        }
 
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
