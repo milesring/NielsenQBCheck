@@ -123,9 +123,9 @@ public class Client{
             if(!Files.exists(Paths.get(settingsLocation).getParent())){
                 Files.createDirectories(Paths.get(settingsLocation).getParent());
             }
-            settingsStr.add(name+"\n");
-            settingsStr.add(address+"\n");
-            settingsStr.add(port+"\n");
+            settingsStr.add(name);
+            settingsStr.add(address);
+            settingsStr.add(port);
             Files.write(Paths.get(settingsLocation), settingsStr, StandardCharsets.UTF_8);
 
             System.out.println("Settings file written.");
