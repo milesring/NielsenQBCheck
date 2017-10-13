@@ -8,7 +8,6 @@
   <component name="ChangeListManager">
     <list default="true" id="3a3282d6-b64b-492d-a13e-183be0b85889" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/JavaClient/src/Client.java" afterPath="$PROJECT_DIR$/JavaClient/src/Client.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/JavaClient/src/QBCheck.java" afterPath="$PROJECT_DIR$/JavaClient/src/QBCheck.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -47,10 +46,12 @@
       <file leaf-file-name="Client.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/JavaClient/src/Client.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="646">
-              <caret line="120" column="54" lean-forward="false" selection-start-line="120" selection-start-column="54" selection-end-line="120" selection-end-column="54" />
+            <state relative-caret-position="288">
+              <caret line="19" column="4" lean-forward="false" selection-start-line="19" selection-start-column="4" selection-end-line="19" selection-end-column="4" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#435#436#0" expanded="true" />
+                <element signature="e#518#519#0" expanded="true" />
                 <element signature="method#openSocket#0;class#Client#0" expanded="false" />
               </folding>
             </state>
@@ -378,6 +379,8 @@
           <caret line="21" column="25" lean-forward="false" selection-start-line="21" selection-start-column="25" selection-end-line="21" selection-end-column="25" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#435#436#0" expanded="true" />
+            <element signature="e#518#519#0" expanded="true" />
             <element signature="method#openSocket#0;class#Client#0" expanded="false" />
           </folding>
         </state>
@@ -399,6 +402,8 @@
           <caret line="21" column="25" lean-forward="false" selection-start-line="21" selection-start-column="25" selection-end-line="21" selection-end-column="25" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#435#436#0" expanded="true" />
+            <element signature="e#518#519#0" expanded="true" />
             <element signature="method#openSocket#0;class#Client#0" expanded="false" />
           </folding>
         </state>
@@ -443,10 +448,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/JavaClient/src/Client.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="646">
-          <caret line="120" column="54" lean-forward="false" selection-start-line="120" selection-start-column="54" selection-end-line="120" selection-end-column="54" />
+        <state relative-caret-position="288">
+          <caret line="19" column="4" lean-forward="false" selection-start-line="19" selection-start-column="4" selection-end-line="19" selection-end-column="4" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#435#436#0" expanded="true" />
+            <element signature="e#518#519#0" expanded="true" />
             <element signature="method#openSocket#0;class#Client#0" expanded="false" />
           </folding>
         </state>

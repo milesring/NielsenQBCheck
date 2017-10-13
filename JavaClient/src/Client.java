@@ -9,11 +9,15 @@ import java.util.List;
 public class Client{
 
     private String address = "localhost";
-    private final String settingsLocation = "%UserProfile%\\Documents\\NielsenQBCheck\\Settings";
+    private String settingsLocation = "\\Documents\\NielsenQBCheck\\Settings";
     private String name = "Test";
     private int port = 9001;
     private Socket s;
 
+    public Client(){
+        settingsLocation = System.getProperty("user.home")+settingsLocation;
+    }
+    
     public void openSocket(){
         try {
             s = new Socket(address, port);
