@@ -99,6 +99,7 @@ public class QBCheck extends Application {
         exitBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
+                client.saveSettings();
                 System.exit(0);
             }
         });

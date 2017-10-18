@@ -7,25 +7,7 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3a3282d6-b64b-492d-a13e-183be0b85889" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/JavaClient/src/Nielsen2.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/artifacts/NielsenQBCheckServer_jar.xml" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/artifacts/JavaServer_jar.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/out/artifacts/JavaClient_jar/JavaClient.jar" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/out/artifacts/JavaServer_jar/JavaServer.jar" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/.idea/artifacts/JavaClient_jar.xml" afterPath="$PROJECT_DIR$/.idea/artifacts/NielsenQBCheck_jar.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/NielsenQBCheckClient/Client.class" afterPath="$PROJECT_DIR$/out/production/NielsenQBCheckClient/Client.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/NielsenQBCheckClient/QBCheck$1.class" afterPath="$PROJECT_DIR$/out/production/NielsenQBCheckClient/QBCheck$1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/NielsenQBCheckClient/QBCheck$2.class" afterPath="$PROJECT_DIR$/out/production/NielsenQBCheckClient/QBCheck$2.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/NielsenQBCheckClient/QBCheck$3.class" afterPath="$PROJECT_DIR$/out/production/NielsenQBCheckClient/QBCheck$3.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/NielsenQBCheckClient/QBCheck$4.class" afterPath="$PROJECT_DIR$/out/production/NielsenQBCheckClient/QBCheck$4.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/NielsenQBCheckClient/QBCheck.class" afterPath="$PROJECT_DIR$/out/production/NielsenQBCheckClient/QBCheck.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/JavaClient/NielsenQBCheckClient.iml" afterPath="$PROJECT_DIR$/JavaClient/NielsenQBCheckClient.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/JavaClient/src/Client.java" afterPath="$PROJECT_DIR$/JavaClient/src/Client.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/JavaClient/src/QBCheck.java" afterPath="$PROJECT_DIR$/JavaClient/src/QBCheck.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/NielsenQBCheckServer.iml" afterPath="$PROJECT_DIR$/NielsenQBCheckServer.iml" />
-    </list>
+    <list default="true" id="3a3282d6-b64b-492d-a13e-183be0b85889" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -51,12 +33,12 @@
       <file leaf-file-name="QBCheck.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/JavaClient/src/QBCheck.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1857">
-              <caret line="232" column="44" lean-forward="false" selection-start-line="232" selection-start-column="44" selection-end-line="232" selection-end-column="44" />
+            <state relative-caret-position="322">
+              <caret line="101" column="38" lean-forward="false" selection-start-line="101" selection-start-column="38" selection-end-line="101" selection-end-column="38" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="class#3645:4048" expanded="false" />
-                <element signature="class#4753:7221" expanded="false" />
+                <element signature="class#3684:4087" expanded="false" />
+                <element signature="class#4792:7260" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -418,8 +400,8 @@
           <caret line="112" column="42" lean-forward="false" selection-start-line="112" selection-start-column="42" selection-end-line="112" selection-end-column="42" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="class#3645:4048" expanded="false" />
-            <element signature="class#4753:7221" expanded="false" />
+            <element signature="class#3684:4087" expanded="false" />
+            <element signature="class#4792:7260" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -493,8 +475,8 @@
           <caret line="28" column="0" lean-forward="false" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="class#3645:4048" expanded="false" />
-            <element signature="class#4753:7221" expanded="false" />
+            <element signature="class#3684:4087" expanded="false" />
+            <element signature="class#4792:7260" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -545,8 +527,8 @@
           <caret line="43" column="52" lean-forward="false" selection-start-line="43" selection-start-column="52" selection-end-line="43" selection-end-column="52" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="class#3645:4048" expanded="false" />
-            <element signature="class#4753:7221" expanded="false" />
+            <element signature="class#3684:4087" expanded="false" />
+            <element signature="class#4792:7260" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -567,8 +549,8 @@
           <caret line="18" column="42" lean-forward="false" selection-start-line="18" selection-start-column="42" selection-end-line="18" selection-end-column="42" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="class#3645:4048" expanded="false" />
-            <element signature="class#4753:7221" expanded="false" />
+            <element signature="class#3684:4087" expanded="false" />
+            <element signature="class#4792:7260" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -635,8 +617,8 @@
           <caret line="18" column="42" lean-forward="true" selection-start-line="18" selection-start-column="42" selection-end-line="18" selection-end-column="42" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="class#3645:4048" expanded="false" />
-            <element signature="class#4753:7221" expanded="false" />
+            <element signature="class#3684:4087" expanded="false" />
+            <element signature="class#4792:7260" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -727,12 +709,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/JavaClient/src/QBCheck.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1857">
-          <caret line="232" column="44" lean-forward="false" selection-start-line="232" selection-start-column="44" selection-end-line="232" selection-end-column="44" />
+        <state relative-caret-position="322">
+          <caret line="101" column="38" lean-forward="false" selection-start-line="101" selection-start-column="38" selection-end-line="101" selection-end-column="38" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="class#3645:4048" expanded="false" />
-            <element signature="class#4753:7221" expanded="false" />
+            <element signature="class#3684:4087" expanded="false" />
+            <element signature="class#4792:7260" expanded="false" />
           </folding>
         </state>
       </provider>
