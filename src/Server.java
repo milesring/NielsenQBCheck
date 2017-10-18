@@ -25,7 +25,7 @@ public class Server
                 while(true) {
                     String lastClient = currentClient;
                     System.out.println("Current client: "+currentClient);
-                    out.println(currentClient + "\n");
+                    out.println(currentClient);
                     currentClient = in.readLine();
                     if (currentClient == null) {
                         currentClient = lastClient;

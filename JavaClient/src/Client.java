@@ -14,6 +14,7 @@ public class Client{
     private String rdpLocation = "";
     private int port = 9001;
     private Socket s;
+    private String lastKnownUser = "";
 
     public Client(){
         settingsLocation = System.getProperty("user.home")+settingsLocation;
@@ -68,14 +69,16 @@ public class Client{
         String msg = "User logged in: ";
         try {
             in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-            out = new PrintWriter(s.getOutputStream(), true);
+            out = new PrintWriter(s.getOutputStream(), false);
 
             String temp = in.readLine();
             if(temp.equals("")){
+                lastKnownUser = "None";
                 msg = "User logged in: None";
                 out.println(temp);
             }
             else{
+                lastKnownUser = temp;
                 msg += temp;
                 out.println(temp);
             }
@@ -84,6 +87,9 @@ public class Client{
 
         }
 
+        if(msg.equals("User logged in: ")){
+            msg+=lastKnownUser;
+        }
         return msg;
 
     }
