@@ -36,6 +36,7 @@ public class QBCheck extends Application {
         if(!client.loadSettings()){
             client.saveSettings();
         }
+        fileLocation = client.getRdpLocation();
 
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.TOP_LEFT);
@@ -124,6 +125,7 @@ public class QBCheck extends Application {
                 FileChooser fileChooser = new FileChooser();
                 fileChooser.setTitle("Remote Desktop Shortcut");
                 fileLocation = fileChooser.showOpenDialog(primaryStage).toString();
+                client.setRdpLocation(fileLocation);
 
             }
         });
@@ -134,7 +136,7 @@ public class QBCheck extends Application {
                 TextInputDialog dialog = new TextInputDialog();
 
                 dialog.setTitle("User Name");
-                //dialog.setHeaderText("Please enter a user name");
+                dialog.setHeaderText("Please enter a user name");
                 dialog.setContentText("Name:");
                 dialog.initStyle(StageStyle.UTILITY);
                 Optional<String> result = dialog.showAndWait();

@@ -11,6 +11,7 @@ public class Client{
     private String address = "localhost";
     private String settingsLocation = "\\Documents\\NielsenQBCheck\\Settings";
     private String name = "Test";
+    private String rdpLocation = "";
     private int port = 9001;
     private Socket s;
 
@@ -52,6 +53,13 @@ public class Client{
         return port;
     }
 
+    public void setRdpLocation(String loc){
+        rdpLocation = loc;
+    }
+
+    public String getRdpLocation(){
+        return rdpLocation;
+    }
 
     //checks the current user logged in from the server
     public String checkUsers(){
@@ -116,12 +124,13 @@ public class Client{
                 System.out.println("File exists");
                 //load correct user settings here
                 settingsList = Files.readAllLines(Paths.get(settingsLocation), StandardCharsets.UTF_8);
-                if(settingsList.size()!=3){
+                if(settingsList.size()!=4){
                     return false;
                 }
                 name = settingsList.get(0);
                 address = settingsList.get(1);
                 port = Integer.parseInt(settingsList.get(2));
+                rdpLocation = settingsList.get(3);
                 System.out.println("Settings loaded...");
                 System.out.println(name);
                 System.out.println(address);
@@ -147,6 +156,7 @@ public class Client{
             settingsStr.add(name);
             settingsStr.add(address);
             settingsStr.add(Integer.toString(port));
+            settingsStr.add(rdpLocation);
             Files.write(Paths.get(settingsLocation), settingsStr, StandardCharsets.UTF_8);
 
             System.out.println("Settings file written.");
