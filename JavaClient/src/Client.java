@@ -1,26 +1,57 @@
 import java.io.*;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Client{
 
-    private final String address = "localhost";
+    private String address = "localhost";
+    private String settingsLocation = "\\Documents\\NielsenQBCheck\\Settings";
     private String name = "Test";
-    private final int port = 9001;
+    private int port = 9001;
     private Socket s;
 
-    public void openSocket(){
+    public Client(){
+        settingsLocation = System.getProperty("user.home")+settingsLocation;
+    }
+
+    public boolean openSocket(){
         try {
             s = new Socket(address, port);
+            return true;
         }
         catch(Exception e){
-
-
+            return false;
         }
     }
 
-    public void changeName(String name){
+    public void setName(String name){
         this.name = name;
     }
+
+    public String getName(){
+        return name;
+    }
+
+    public void setAddress(String address){
+        this.address = address;
+    }
+
+    public String getAddress(){
+        return address;
+    }
+
+    public void setPort(int port){
+        this.port = port;
+    }
+
+    public int getPort(){
+        return port;
+    }
+
 
     //checks the current user logged in from the server
     public String checkUsers(){
@@ -69,10 +100,60 @@ public class Client{
     public void closeSocket(){
         try {
             s.close();
-        }catch(IOException e){
-            e.printStackTrace();
+        }catch(Exception e){
+            //s was never opened
         }
     }
 
 
+    public boolean loadSettings(){
+
+        System.out.println("Loading settings...");
+        List<String> settingsList = null;
+        try {
+            File settings = new File(settingsLocation);
+            if (settings.exists()) {
+                System.out.println("File exists");
+                //load correct user settings here
+                settingsList = Files.readAllLines(Paths.get(settingsLocation), StandardCharsets.UTF_8);
+                if(settingsList.size()!=3){
+                    return false;
+                }
+                name = settingsList.get(0);
+                address = settingsList.get(1);
+                port = Integer.parseInt(settingsList.get(2));
+                System.out.println("Settings loaded...");
+                System.out.println(name);
+                System.out.println(address);
+                System.out.println(port);
+                return true;
+            }
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+
+        System.out.println("No settings file exists");
+        return false;
+    }
+
+    public boolean saveSettings(){
+        ArrayList<String> settingsStr = new ArrayList<>();
+
+        System.out.println("Writing new settings file...");
+        try {
+            if(!Files.exists(Paths.get(settingsLocation).getParent())){
+                Files.createDirectories(Paths.get(settingsLocation).getParent());
+            }
+            settingsStr.add(name);
+            settingsStr.add(address);
+            settingsStr.add(Integer.toString(port));
+            Files.write(Paths.get(settingsLocation), settingsStr, StandardCharsets.UTF_8);
+
+            System.out.println("Settings file written.");
+            return true;
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

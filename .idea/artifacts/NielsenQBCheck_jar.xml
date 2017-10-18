@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
-  <artifact type="jar" build-on-make="true" name="JavaClient:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/JavaClient_jar</output-path>
+  <artifact type="jar" build-on-make="true" name="NielsenQBCheck:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/NielsenQBCheck_jar</output-path>
     <root id="archive" name="JavaClient.jar">
       <element id="module-output" name="NielsenQBCheckClient" />
     </root>
