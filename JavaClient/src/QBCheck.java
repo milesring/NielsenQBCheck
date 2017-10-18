@@ -1,15 +1,23 @@
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.util.Pair;
+
+import java.util.Optional;
 
 //TO DO, add user and server options
 
@@ -30,38 +38,81 @@ public class QBCheck extends Application {
         }
 
         GridPane grid = new GridPane();
-        grid.setAlignment(Pos.CENTER);
-        grid.setHgap(10);
+        grid.setAlignment(Pos.TOP_LEFT);
+        //grid.setGridLinesVisible(true);
+        //grid.setHgap(10);
         grid.setVgap(10);
-        grid.setPadding(new Insets(25, 25, 25, 25));
 
         Scene scene = new Scene(grid, 300, 275);
+
         primaryStage.setTitle("Nielsen QB Check");
         primaryStage.setScene(scene);
-        Text titleText = new Text("Nielsen QuickBooks Login Check");
+        primaryStage.getIcons().add(new Image("file:Nielsen2.png"));
 
-        client.openSocket();
-        Text users = new Text(client.checkUsers());
+        //Settings Buttons
+        Button nameBtn = new Button(client.getName());
+        nameBtn.setMinWidth(50);
+        nameBtn.setStyle(("-fx-font-size: 10"));
+        Button locateBtn = new Button("RDP");
+        locateBtn.setMinWidth(50);
+        locateBtn.setStyle(("-fx-font-size: 10"));
+        Button addressBtn = new Button("Server");
+        addressBtn.setMinWidth(50);
+        addressBtn.setStyle(("-fx-font-size: 10"));
+        Button refreshBtn = new Button("Refresh");
+        refreshBtn.setMinWidth(50);
+        refreshBtn.setStyle(("-fx-font-size: 10"));
+        grid.add(nameBtn, 0, 0, 1, 1);
+        grid.add(locateBtn, 1,0,1,1);
+        grid.add(addressBtn, 2, 0, 1, 1);
+        grid.add(new Text(""), 3, 0, 1, 1);
+        grid.add(refreshBtn, 8, 0, 1, 1);
+
+        //Main Text
+        Text titleText = new Text("Nielsen QuickBooks Check");
+        titleText.setFont(Font.font(16));
+        titleText.setUnderline(true);
+        grid.add(titleText, 1, 3, 6, 2);
+
+        //Users Text
+        Text users;
+        if(!client.openSocket()){
+            users = new Text("Error: No connection");
+        }else {
+            users = new Text(client.checkUsers());
+        }
         client.closeSocket();
+        grid.add(users, 1, 7, 3, 1);
 
-        grid.add(titleText, 0, 0, 2, 1);
-        grid.add(users, 0, 1, 2, 1);
-
+        //Main Buttons
         Button connectBtn = new Button("Connect");
-        Button locateBtn = new Button("Locate");
-        Button nameBtn = new Button("Name");
+        connectBtn.setStyle("-fx-font-size: 15");
+        connectBtn.setMinWidth(100);
         Button exitBtn = new Button("Exit");
-        HBox hbBtn = new HBox(10);
-        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
-        hbBtn.getChildren().add(connectBtn);
-        hbBtn.getChildren().add(locateBtn);
-        hbBtn.getChildren().add(nameBtn);
-        hbBtn.getChildren().add(exitBtn);
+        exitBtn.setStyle("-fx-font-size: 15");
+        exitBtn.setMinWidth(100);
+        grid.add(connectBtn, 1, 15, 2, 2);
+        grid.add(exitBtn, 5, 15, 2, 2);
+
+
 
         exitBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
                 System.exit(0);
+            }
+        });
+
+        refreshBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                if(client.openSocket()){
+                    users.setText(client.checkUsers());
+                }
+                else{
+                    users.setText("Error: No connection");
+                }
+                client.closeSocket();
             }
         });
 
@@ -79,7 +130,75 @@ public class QBCheck extends Application {
        nameBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
-                client.changeName("Test2");
+                TextInputDialog dialog = new TextInputDialog();
+
+                dialog.setTitle("User Name");
+                //dialog.setHeaderText("Please enter a user name");
+                dialog.setContentText("Name:");
+                dialog.initStyle(StageStyle.UTILITY);
+                Optional<String> result = dialog.showAndWait();
+                if(result.isPresent()){
+                    client.setName(result.get());
+                    nameBtn.setText(client.getName());
+                }
+
+            }
+        });
+
+       addressBtn.setOnAction(new EventHandler<ActionEvent>() {
+           @Override
+           public void handle(ActionEvent e) {
+
+                // Create the custom dialog.
+                Dialog<Pair<String, String>> dialog = new Dialog<>();
+                dialog.setTitle("Server Settings");
+                dialog.setHeaderText("Server Address and Port");
+
+                // Set the button types.
+                ButtonType acceptButtonType = new ButtonType("Accept", ButtonBar.ButtonData.OK_DONE);
+                dialog.getDialogPane().getButtonTypes().addAll(acceptButtonType, ButtonType.CANCEL);
+
+                // Create the server and port labels and fields.
+                GridPane grid = new GridPane();
+                grid.setHgap(10);
+                grid.setVgap(10);
+                grid.setPadding(new Insets(20, 150, 10, 10));
+
+                TextField server = new TextField();
+                server.setPromptText(client.getAddress());
+                TextField portNum = new TextField();
+                portNum.setPromptText(Integer.toString(client.getPort()));
+
+                grid.add(new Label("Server:"), 0, 0);
+                grid.add(server, 1, 0);
+                grid.add(new Label("Port:"), 0, 1);
+                grid.add(portNum, 1, 1);
+
+                // Enable/Disable accept button depending on whether a server was entered.
+                Node acceptButton = dialog.getDialogPane().lookupButton(acceptButtonType);
+                acceptButton.setDisable(true);
+
+                // Do some validation (using the Java 8 lambda syntax).
+                server.textProperty().addListener((observable, oldValue, newValue) -> {
+                    acceptButton.setDisable(newValue.trim().isEmpty());
+                });
+
+                dialog.getDialogPane().setContent(grid);
+
+
+               // Convert the result to a server-port-pair when the accept button is clicked.
+                dialog.setResultConverter(dialogButton -> {
+                    if (dialogButton == acceptButtonType) {
+                        return new Pair<>(server.getText(), portNum.getText());
+                    }
+                    return null;
+                });
+
+                Optional<Pair<String, String>> result = dialog.showAndWait();
+                result.ifPresent(serverPort -> {
+                    client.setAddress(serverPort.getKey());
+                    client.setPort(Integer.parseInt(serverPort.getValue()));
+                });
             }
         });
 
@@ -101,21 +220,22 @@ public class QBCheck extends Application {
                     process.waitFor();
 
                     //change logged in user to none
-                    client.changeName("");
+                    String lastUsed = client.getName();
+                    client.setName("");
                     client.openSocket();
                     client.notifyServer();
                     users.setText(client.checkUsers());
                     client.closeSocket();
-                    client.changeName("Test");
+                    client.setName(lastUsed);
 
                 }
                 catch (Exception exc){
-                    exc.printStackTrace();
+                    //exc.printStackTrace();
+
                 }
             }
         });
 
-        grid.add(hbBtn, 1, 4);
 
         primaryStage.show();
     }

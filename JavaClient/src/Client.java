@@ -18,19 +18,40 @@ public class Client{
         settingsLocation = System.getProperty("user.home")+settingsLocation;
     }
 
-    public void openSocket(){
+    public boolean openSocket(){
         try {
             s = new Socket(address, port);
+            return true;
         }
         catch(Exception e){
-
-
+            return false;
         }
     }
 
-    public void changeName(String name){
+    public void setName(String name){
         this.name = name;
     }
+
+    public String getName(){
+        return name;
+    }
+
+    public void setAddress(String address){
+        this.address = address;
+    }
+
+    public String getAddress(){
+        return address;
+    }
+
+    public void setPort(int port){
+        this.port = port;
+    }
+
+    public int getPort(){
+        return port;
+    }
+
 
     //checks the current user logged in from the server
     public String checkUsers(){
@@ -79,8 +100,8 @@ public class Client{
     public void closeSocket(){
         try {
             s.close();
-        }catch(IOException e){
-            e.printStackTrace();
+        }catch(Exception e){
+            //s was never opened
         }
     }
 
