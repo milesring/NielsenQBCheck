@@ -1,3 +1,5 @@
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -16,6 +18,7 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
 import javafx.util.Pair;
 
 import java.util.Optional;
@@ -108,6 +111,9 @@ public class QBCheck extends Application {
         refreshBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
+                //disable button here
+                refreshBtn.setDisable(true);
+
                 if(client.openSocket()){
                     users.setText(client.checkUsers());
                 }
@@ -115,6 +121,11 @@ public class QBCheck extends Application {
                     users.setText("Error: No connection");
                 }
                 client.closeSocket();
+                Timeline timeline = new Timeline(new KeyFrame(
+                        Duration.millis(3000)));
+                timeline.setOnFinished(actionEvent -> refreshBtn.setDisable(false));
+                timeline.play();
+
             }
         });
 
@@ -221,16 +232,16 @@ public class QBCheck extends Application {
                 try{
 
                     //launch rdp
-                    Process process = runtime.exec("C:\\Windows\\System32\\mstsc "+fileLocation);
+                    //Process process = runtime.exec("C:\\Windows\\System32\\mstsc "+fileLocation);
                     client.openSocket();
                     client.notifyServer();
                     users.setText(client.checkUsers());
                     client.closeSocket();
 
                     //wait for rdp to close
-                    process.waitFor();
+                    //process.waitFor();
 
-
+/*
                     //change logged in user to none
                     String lastUsed = client.getName();
                     client.setName("");
@@ -239,7 +250,7 @@ public class QBCheck extends Application {
                     users.setText(client.checkUsers());
                     client.closeSocket();
                     client.setName(lastUsed);
-
+*/
 
                 }
                 catch (Exception exc){
