@@ -5,24 +5,27 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.prefs.Preferences;
 
 public class Client{
-
+    private Preferences prefs;
     private String address = "localhost";
-    private String settingsLocation = "\\Documents\\NielsenQBCheck\\Settings";
-    private String name = "Test";
+    private String name = "Default Name";
     private String rdpLocation = "";
     private int port = 9001;
     private Socket s;
     private String lastKnownUser = "";
 
+    private final int timeout = 3000;
+
     public Client(){
-        settingsLocation = System.getProperty("user.home")+settingsLocation;
+        prefs = Preferences.userRoot().node(this.getClass().getName());
     }
 
     public boolean openSocket(){
         try {
-            s = new Socket(address, port);
+            s = new Socket();
+            s.connect(new InetSocketAddress(address, port), timeout);
             return true;
         }
         catch(Exception e){
@@ -67,29 +70,24 @@ public class Client{
         BufferedReader in = null;
         PrintWriter out = null;
         String msg = "User logged in: ";
-        try {
-            in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-            out = new PrintWriter(s.getOutputStream(), false);
 
-            String temp = in.readLine();
-            if(temp.equals("")){
-                lastKnownUser = "None";
-                msg = "User logged in: None";
-                out.println(temp);
+            try {
+                in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+                out = new PrintWriter(s.getOutputStream(), true);
+
+                String temp = in.readLine();
+                if (temp.equals("")) {
+                    lastKnownUser = "None";
+                    msg = "User logged in: None";
+                    out.println(temp);
+                } else {
+                    lastKnownUser = temp;
+                    msg += temp;
+                    out.println(temp);
+                }
+            } catch (Exception e) {
+
             }
-            else{
-                lastKnownUser = temp;
-                msg += temp;
-                out.println(temp);
-            }
-        }
-        catch(Exception e){
-
-        }
-
-        if(msg.equals("User logged in: ")){
-            msg+=lastKnownUser;
-        }
         return msg;
 
     }
@@ -121,55 +119,40 @@ public class Client{
 
 
     public boolean loadSettings(){
+        boolean userSettingsLoaded = false;
 
-        System.out.println("Loading settings...");
-        List<String> settingsList = null;
-        try {
-            File settings = new File(settingsLocation);
-            if (settings.exists()) {
-                System.out.println("File exists");
-                //load correct user settings here
-                settingsList = Files.readAllLines(Paths.get(settingsLocation), StandardCharsets.UTF_8);
-                if(settingsList.size()!=4){
-                    return false;
-                }
-                name = settingsList.get(0);
-                address = settingsList.get(1);
-                port = Integer.parseInt(settingsList.get(2));
-                rdpLocation = settingsList.get(3);
-                System.out.println("Settings loaded...");
-                System.out.println(name);
-                System.out.println(address);
-                System.out.println(port);
-                return true;
-            }
-        }catch(IOException e){
-            e.printStackTrace();
+        name = prefs.get("Username", "Default Name");
+        rdpLocation = prefs.get("RDPLocation", "");
+        address = prefs.get("Address", "localhost");
+        port = prefs.getInt("Port", 9001);
+        if(!name.equals("Default Name") && !rdpLocation.equals("") &&
+                !address.equals("localhost") && port != 9001){
+            userSettingsLoaded = true;
+        }
+        if(userSettingsLoaded){
+            System.out.println("User settings successfully loaded");
+        } else {
+            System.out.println("User settings either have default values or failed to load");
         }
 
-        System.out.println("No settings file exists");
-        return false;
+        return userSettingsLoaded;
     }
 
     public boolean saveSettings(){
-        ArrayList<String> settingsStr = new ArrayList<>();
+        boolean userSettingsSaved = false;
 
-        System.out.println("Writing new settings file...");
-        try {
-            if(!Files.exists(Paths.get(settingsLocation).getParent())){
-                Files.createDirectories(Paths.get(settingsLocation).getParent());
-            }
-            settingsStr.add(name);
-            settingsStr.add(address);
-            settingsStr.add(Integer.toString(port));
-            settingsStr.add(rdpLocation);
-            Files.write(Paths.get(settingsLocation), settingsStr, StandardCharsets.UTF_8);
+        prefs.put("Username", name);
+        prefs.put("RDPLocation", rdpLocation);
+        prefs.put("Address", address);
+        prefs.putInt("Port", port);
 
-            System.out.println("Settings file written.");
-            return true;
-        }catch(Exception e){
-            e.printStackTrace();
+        if(prefs.get("Username", "Default Name").equals(name) &&
+                prefs.get("RDPLocation", "").equals(rdpLocation) &&
+                prefs.get("Address", "localhost").equals(address) &&
+                prefs.getInt("Port", 9001) == port){
+                userSettingsSaved = true;
         }
-        return false;
+
+        return userSettingsSaved;
     }
 }

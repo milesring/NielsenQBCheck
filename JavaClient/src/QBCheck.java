@@ -124,7 +124,12 @@ public class QBCheck extends Application {
                 //open filebrowser to get location of remote desktop
                 FileChooser fileChooser = new FileChooser();
                 fileChooser.setTitle("Remote Desktop Shortcut");
-                fileLocation = fileChooser.showOpenDialog(primaryStage).toString();
+                try {
+                    fileLocation = fileChooser.showOpenDialog(primaryStage).toString();
+                }catch(Exception exc){
+                    fileLocation = client.getRdpLocation();
+                    System.out.println("Not a valid filepath or user hit cancel on filebrowser");
+                }
                 client.setRdpLocation(fileLocation);
                 client.saveSettings();
 
@@ -216,16 +221,16 @@ public class QBCheck extends Application {
                 try{
 
                     //launch rdp
-                    //Process process = runtime.exec("C:\\Windows\\System32\\mstsc "+fileLocation);
+                    Process process = runtime.exec("C:\\Windows\\System32\\mstsc "+fileLocation);
                     client.openSocket();
                     client.notifyServer();
                     users.setText(client.checkUsers());
                     client.closeSocket();
 
                     //wait for rdp to close
-                    //process.waitFor();
+                    process.waitFor();
 
-                    /*
+
                     //change logged in user to none
                     String lastUsed = client.getName();
                     client.setName("");
@@ -234,7 +239,7 @@ public class QBCheck extends Application {
                     users.setText(client.checkUsers());
                     client.closeSocket();
                     client.setName(lastUsed);
-                    */
+
 
                 }
                 catch (Exception exc){
