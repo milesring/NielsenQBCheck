@@ -2,6 +2,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -19,7 +20,7 @@ import javafx.util.Pair;
 
 import java.util.Optional;
 
-//TO DO, add user and server options
+//TO DO, LAST KNOWN USER ISSUES IF 1 LOGIN, THEN 2 LOGIN, EXIT 1, 1 IS CLEARED FROM THE SERVER, BUT 2 IS ACTUALLY LOGGED IN
 
 public class QBCheck extends Application {
 
@@ -37,6 +38,7 @@ public class QBCheck extends Application {
             client.saveSettings();
         }
         fileLocation = client.getRdpLocation();
+
 
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.TOP_LEFT);
@@ -95,12 +97,10 @@ public class QBCheck extends Application {
         grid.add(connectBtn, 1, 15, 2, 2);
         grid.add(exitBtn, 5, 15, 2, 2);
 
-
-
         exitBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
-                client.saveSettings();
+                shutDownProcedures();
                 System.exit(0);
             }
         });
@@ -124,13 +124,19 @@ public class QBCheck extends Application {
                 //open filebrowser to get location of remote desktop
                 FileChooser fileChooser = new FileChooser();
                 fileChooser.setTitle("Remote Desktop Shortcut");
-                fileLocation = fileChooser.showOpenDialog(primaryStage).toString();
+                try {
+                    fileLocation = fileChooser.showOpenDialog(primaryStage).toString();
+                }catch(Exception exc){
+                    fileLocation = client.getRdpLocation();
+                    System.out.println("Not a valid filepath or user hit cancel on filebrowser");
+                }
                 client.setRdpLocation(fileLocation);
+                client.saveSettings();
 
             }
         });
 
-       nameBtn.setOnAction(new EventHandler<ActionEvent>() {
+        nameBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
                 TextInputDialog dialog = new TextInputDialog();
@@ -143,12 +149,13 @@ public class QBCheck extends Application {
                 if(result.isPresent()){
                     client.setName(result.get());
                     nameBtn.setText(client.getName());
+                    client.saveSettings();
                 }
 
             }
         });
 
-       addressBtn.setOnAction(new EventHandler<ActionEvent>() {
+        addressBtn.setOnAction(new EventHandler<ActionEvent>() {
            @Override
            public void handle(ActionEvent e) {
 
@@ -201,6 +208,7 @@ public class QBCheck extends Application {
                 result.ifPresent(serverPort -> {
                     client.setAddress(serverPort.getKey());
                     client.setPort(Integer.parseInt(serverPort.getValue()));
+                    client.saveSettings();
                 });
             }
         });
@@ -222,6 +230,7 @@ public class QBCheck extends Application {
                     //wait for rdp to close
                     process.waitFor();
 
+
                     //change logged in user to none
                     String lastUsed = client.getName();
                     client.setName("");
@@ -231,6 +240,7 @@ public class QBCheck extends Application {
                     client.closeSocket();
                     client.setName(lastUsed);
 
+
                 }
                 catch (Exception exc){
                     //exc.printStackTrace();
@@ -239,7 +249,21 @@ public class QBCheck extends Application {
             }
         });
 
-
         primaryStage.show();
     }
+
+    @Override
+    public void stop(){
+        shutDownProcedures();
+    }
+
+    private void shutDownProcedures(){
+        if(client.checkUsers().equals("User logged in: "+client.getName())){
+            client.setName("");
+            client.openSocket();
+            client.notifyServer();
+            client.closeSocket();
+        }
+    }
+
 }
