@@ -1,22 +1,14 @@
 import java.io.*;
 import java.net.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.prefs.Preferences;
 
-public class Client{
-    private Preferences prefs;
+class Client{
+    private final Preferences prefs;
     private String address = "localhost";
     private String name = "Default Name";
     private String rdpLocation = "";
     private int port = 9001;
     private Socket s;
-    private String lastKnownUser = "";
-
-    private final int timeout = 3000;
 
     public Client(){
         prefs = Preferences.userRoot().node(this.getClass().getName());
@@ -25,6 +17,7 @@ public class Client{
     public boolean openSocket(){
         try {
             s = new Socket();
+            int timeout = 3000;
             s.connect(new InetSocketAddress(address, port), timeout);
             return true;
         }
@@ -67,8 +60,8 @@ public class Client{
 
     //checks the current user logged in from the server
     public String checkUsers(){
-        BufferedReader in = null;
-        PrintWriter out = null;
+        BufferedReader in;
+        PrintWriter out;
         String msg = "User logged in: ";
 
             try {
@@ -76,6 +69,7 @@ public class Client{
                 out = new PrintWriter(s.getOutputStream(), true);
 
                 String temp = in.readLine();
+                String lastKnownUser = "";
                 if (temp.equals("")) {
                     lastKnownUser = "None";
                     msg = "User logged in: None";
@@ -85,7 +79,7 @@ public class Client{
                     msg += temp;
                     out.println(temp);
                 }
-            } catch (Exception e) {
+            } catch (Exception ignored) {
 
             }
         return msg;
@@ -93,8 +87,8 @@ public class Client{
     }
 
     public void notifyServer(){
-        PrintWriter out = null;
-        BufferedReader in = null;
+        PrintWriter out;
+        BufferedReader in;
 
 
         try {
@@ -103,7 +97,7 @@ public class Client{
             in.readLine();
             out.println(name);
         }
-        catch(Exception e){
+        catch(Exception ignored){
 
         }
 
@@ -138,21 +132,10 @@ public class Client{
         return userSettingsLoaded;
     }
 
-    public boolean saveSettings(){
-        boolean userSettingsSaved = false;
-
+    public void saveSettings(){
         prefs.put("Username", name);
         prefs.put("RDPLocation", rdpLocation);
         prefs.put("Address", address);
         prefs.putInt("Port", port);
-
-        if(prefs.get("Username", "Default Name").equals(name) &&
-                prefs.get("RDPLocation", "").equals(rdpLocation) &&
-                prefs.get("Address", "localhost").equals(address) &&
-                prefs.getInt("Port", 9001) == port){
-                userSettingsSaved = true;
-        }
-
-        return userSettingsSaved;
     }
 }

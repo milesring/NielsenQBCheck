@@ -1,17 +1,14 @@
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -100,163 +97,144 @@ public class QBCheck extends Application {
         grid.add(connectBtn, 1, 15, 2, 2);
         grid.add(exitBtn, 5, 15, 2, 2);
 
-        exitBtn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-                shutDownProcedures();
-                System.exit(0);
-            }
+        exitBtn.setOnAction(e -> {
+            shutDownProcedures();
+            System.exit(0);
         });
 
-        refreshBtn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-                //disable button here
-                refreshBtn.setDisable(true);
+        refreshBtn.setOnAction(e -> {
+            //disable button here
+            refreshBtn.setDisable(true);
 
-                if(client.openSocket()){
-                    users.setText(client.checkUsers());
-                }
-                else{
-                    users.setText("Error: No connection");
-                }
-                client.closeSocket();
-                Timeline timeline = new Timeline(new KeyFrame(
-                        Duration.millis(3000)));
-                timeline.setOnFinished(actionEvent -> refreshBtn.setDisable(false));
-                timeline.play();
-
+            if(client.openSocket()){
+                users.setText(client.checkUsers());
             }
+            else{
+                users.setText("Error: No connection");
+            }
+            client.closeSocket();
+            Timeline timeline = new Timeline(new KeyFrame(
+                    Duration.millis(3000)));
+            timeline.setOnFinished(actionEvent -> refreshBtn.setDisable(false));
+            timeline.play();
         });
 
-        locateBtn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-                //open filebrowser to get location of remote desktop
-                FileChooser fileChooser = new FileChooser();
-                fileChooser.setTitle("Remote Desktop Shortcut");
-                try {
-                    fileLocation = fileChooser.showOpenDialog(primaryStage).toString();
-                }catch(Exception exc){
-                    fileLocation = client.getRdpLocation();
-                    System.out.println("Not a valid filepath or user hit cancel on filebrowser");
-                }
-                client.setRdpLocation(fileLocation);
+        locateBtn.setOnAction(e -> {
+            //open filebrowser to get location of remote desktop
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Remote Desktop Shortcut");
+            try {
+                fileLocation = fileChooser.showOpenDialog(primaryStage).toString();
+            }catch(Exception exc){
+                fileLocation = client.getRdpLocation();
+                System.out.println("Not a valid filepath or user hit cancel on filebrowser");
+            }
+            client.setRdpLocation(fileLocation);
+            client.saveSettings();
+
+        });
+
+        nameBtn.setOnAction(e -> {
+            TextInputDialog dialog = new TextInputDialog();
+
+            dialog.setTitle("User Name");
+            dialog.setHeaderText("Please enter a user name");
+            dialog.setContentText("Name:");
+            dialog.initStyle(StageStyle.UTILITY);
+            Optional<String> result = dialog.showAndWait();
+            result.ifPresent(s -> {
+                client.setName(s);
+                nameBtn.setText(client.getName());
                 client.saveSettings();
+            });
 
-            }
         });
 
-        nameBtn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-                TextInputDialog dialog = new TextInputDialog();
+        addressBtn.setOnAction(e -> {
 
-                dialog.setTitle("User Name");
-                dialog.setHeaderText("Please enter a user name");
-                dialog.setContentText("Name:");
-                dialog.initStyle(StageStyle.UTILITY);
-                Optional<String> result = dialog.showAndWait();
-                if(result.isPresent()){
-                    client.setName(result.get());
-                    nameBtn.setText(client.getName());
-                    client.saveSettings();
-                }
+             // Create the custom dialog.
+             Dialog<Pair<String, String>> dialog = new Dialog<>();
+             dialog.setTitle("Server Settings");
+             dialog.setHeaderText("Server Address and Port");
+
+             // Set the button types.
+             ButtonType acceptButtonType = new ButtonType("Accept", ButtonBar.ButtonData.OK_DONE);
+             dialog.getDialogPane().getButtonTypes().addAll(acceptButtonType, ButtonType.CANCEL);
+
+             // Create the server and port labels and fields.
+             GridPane grid1 = new GridPane();
+             grid1.setHgap(10);
+             grid1.setVgap(10);
+             grid1.setPadding(new Insets(20, 150, 10, 10));
+
+             TextField server = new TextField();
+             server.setPromptText(client.getAddress());
+             TextField portNum = new TextField();
+             portNum.setPromptText(Integer.toString(client.getPort()));
+
+             grid1.add(new Label("Server:"), 0, 0);
+             grid1.add(server, 1, 0);
+             grid1.add(new Label("Port:"), 0, 1);
+             grid1.add(portNum, 1, 1);
+
+             // Enable/Disable accept button depending on whether a server was entered.
+             Node acceptButton = dialog.getDialogPane().lookupButton(acceptButtonType);
+             acceptButton.setDisable(true);
+
+             // Do some validation (using the Java 8 lambda syntax).
+             server.textProperty().addListener((observable, oldValue, newValue) -> {
+                 acceptButton.setDisable(newValue.trim().isEmpty());
+             });
+
+             dialog.getDialogPane().setContent(grid1);
+
+
+            // Convert the result to a server-port-pair when the accept button is clicked.
+             dialog.setResultConverter(dialogButton -> {
+                 if (dialogButton == acceptButtonType) {
+                     return new Pair<>(server.getText(), portNum.getText());
+                 }
+                 return null;
+             });
+
+             Optional<Pair<String, String>> result = dialog.showAndWait();
+             result.ifPresent(serverPort -> {
+                 client.setAddress(serverPort.getKey());
+                 client.setPort(Integer.parseInt(serverPort.getValue()));
+                 client.saveSettings();
+             });
+         });
+
+        connectBtn.setOnAction(e -> {
+           //launch qb remote server here
+            Runtime runtime = Runtime.getRuntime();
+            try{
+
+                //launch rdp
+                Process process = runtime.exec("C:\\Windows\\System32\\mstsc "+fileLocation);
+                client.openSocket();
+                client.notifyServer();
+                users.setText(client.checkUsers());
+                client.closeSocket();
+
+                //wait for rdp to close
+                process.waitFor();
+
+
+                //change logged in user to none
+                String lastUsed = client.getName();
+                client.setName("");
+                client.openSocket();
+                client.notifyServer();
+                users.setText(client.checkUsers());
+                client.closeSocket();
+                client.setName(lastUsed);
+
 
             }
-        });
+            catch (Exception exc){
+                //exc.printStackTrace();
 
-        addressBtn.setOnAction(new EventHandler<ActionEvent>() {
-           @Override
-           public void handle(ActionEvent e) {
-
-                // Create the custom dialog.
-                Dialog<Pair<String, String>> dialog = new Dialog<>();
-                dialog.setTitle("Server Settings");
-                dialog.setHeaderText("Server Address and Port");
-
-                // Set the button types.
-                ButtonType acceptButtonType = new ButtonType("Accept", ButtonBar.ButtonData.OK_DONE);
-                dialog.getDialogPane().getButtonTypes().addAll(acceptButtonType, ButtonType.CANCEL);
-
-                // Create the server and port labels and fields.
-                GridPane grid = new GridPane();
-                grid.setHgap(10);
-                grid.setVgap(10);
-                grid.setPadding(new Insets(20, 150, 10, 10));
-
-                TextField server = new TextField();
-                server.setPromptText(client.getAddress());
-                TextField portNum = new TextField();
-                portNum.setPromptText(Integer.toString(client.getPort()));
-
-                grid.add(new Label("Server:"), 0, 0);
-                grid.add(server, 1, 0);
-                grid.add(new Label("Port:"), 0, 1);
-                grid.add(portNum, 1, 1);
-
-                // Enable/Disable accept button depending on whether a server was entered.
-                Node acceptButton = dialog.getDialogPane().lookupButton(acceptButtonType);
-                acceptButton.setDisable(true);
-
-                // Do some validation (using the Java 8 lambda syntax).
-                server.textProperty().addListener((observable, oldValue, newValue) -> {
-                    acceptButton.setDisable(newValue.trim().isEmpty());
-                });
-
-                dialog.getDialogPane().setContent(grid);
-
-
-               // Convert the result to a server-port-pair when the accept button is clicked.
-                dialog.setResultConverter(dialogButton -> {
-                    if (dialogButton == acceptButtonType) {
-                        return new Pair<>(server.getText(), portNum.getText());
-                    }
-                    return null;
-                });
-
-                Optional<Pair<String, String>> result = dialog.showAndWait();
-                result.ifPresent(serverPort -> {
-                    client.setAddress(serverPort.getKey());
-                    client.setPort(Integer.parseInt(serverPort.getValue()));
-                    client.saveSettings();
-                });
-            }
-        });
-
-        connectBtn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-               //launch qb remote server here
-                Runtime runtime = Runtime.getRuntime();
-                try{
-
-                    //launch rdp
-                    //Process process = runtime.exec("C:\\Windows\\System32\\mstsc "+fileLocation);
-                    client.openSocket();
-                    client.notifyServer();
-                    users.setText(client.checkUsers());
-                    client.closeSocket();
-
-                    //wait for rdp to close
-                    //process.waitFor();
-
-/*
-                    //change logged in user to none
-                    String lastUsed = client.getName();
-                    client.setName("");
-                    client.openSocket();
-                    client.notifyServer();
-                    users.setText(client.checkUsers());
-                    client.closeSocket();
-                    client.setName(lastUsed);
-*/
-
-                }
-                catch (Exception exc){
-                    //exc.printStackTrace();
-
-                }
             }
         });
 

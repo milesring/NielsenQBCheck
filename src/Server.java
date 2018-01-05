@@ -1,7 +1,7 @@
 import java.io.*;
 import java.net.*;
 
-public class Server
+class Server
 {
     private static final int port = 9001;
     private static String currentClient = "";
@@ -36,7 +36,7 @@ public class Server
                 }
                 System.out.println("Disconnected");
 
-            } catch (Exception e) {
+            } catch (Exception ignored) {
 
 
             }
